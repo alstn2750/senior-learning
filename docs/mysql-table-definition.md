@@ -22,6 +22,7 @@
 | 회원 | `addresses` | 방문 수업 주소 |
 | 회원 | `user_consents` | 약관·개인정보·위치·리포트 공유 동의 이력 |
 | 상품 | `centers` | 센터 수업 장소 |
+| 안전 | `nfc_tags` | 방문지·센터에 등록된 도착 인증 태그 |
 | 상품 | `program_categories` | 디지털, 웰니스, 인지 등 분야 |
 | 상품 | `programs` | 프로그램 기본 정보 |
 | 상품 | `program_recommendations` | 추천 대상 문구 |
@@ -35,11 +36,13 @@
 | 서비스 | `enrollments` | 프로그램 이용 신청/구독 |
 | 서비스 | `teacher_match_requests` | 선생님 요청과 최종 배정 |
 | 서비스 | `class_sessions` | 회차별 수업 일정 |
+| 서비스 | `teacher_reviews` | 완료 수업의 선생님 후기 |
 | 안전 | `session_safety_events` | NFC 도착, 수업 종료, 귀가 등 이벤트 |
 | 안전 | `location_share_sessions` | 제한 시간 GPS 공유 세션 |
 | 리포트 | `learning_records` | 수업 활동·참여 기록 |
 | 리포트 | `care_reports` | 기분·활력·집중과 가족 대화 제안 |
 | 알림 | `notifications` | 앱/SMS/푸시/이메일 발송 이력 |
+| 보안 | `audit_logs` | 민감정보 조회·변경 감사 로그 |
 | B2B/B2G | `organizations` | 기업·정부·제휴 기관 |
 | B2B/B2G | `organization_members` | 기관 담당자·복지 대상자 |
 | B2B/B2G | `vouchers` | 복지포인트·공공 바우처 잔액 |
@@ -132,7 +135,21 @@
 | `capacity` | SMALLINT UNSIGNED | Y |  | 동시 수용 인원 |
 | `status` | VARCHAR(20) | N | IDX | `PREPARING/ACTIVE/INACTIVE` |
 
-### 3.7 프로그램 테이블
+### 3.7 `nfc_tags`
+
+| 컬럼 | 타입 | NULL | 키 | 설명 |
+|---|---|---:|---|---|
+| `id` | BIGINT UNSIGNED | N | PK | 태그 식별자 |
+| `tag_uid_hash` | CHAR(64) | N | UK | NFC UID 단방향 해시 |
+| `address_id` | BIGINT UNSIGNED | Y | FK, IDX | 방문지 태그인 경우 주소 |
+| `center_id` | BIGINT UNSIGNED | Y | FK, IDX | 센터 태그인 경우 센터 |
+| `label` | VARCHAR(80) | N |  | 설치 위치 표시명 |
+| `status` | VARCHAR(20) | N | IDX | `ACTIVE/REVOKED/LOST` |
+| `activated_at/revoked_at` | DATETIME(3) | N/Y |  | 활성·폐기 시각 |
+
+`address_id`와 `center_id` 중 정확히 하나만 존재해야 한다. 도착 인증 시 전달된 UID를 같은 방식으로 해시해 활성 태그와 비교하며 원문 UID는 보관하지 않는다.
+
+### 3.8 프로그램 테이블
 
 | 테이블 | 주요 컬럼 | 키/관계 | 설명 |
 |---|---|---|---|
@@ -144,7 +161,7 @@
 
 `service_mode`은 `HOME/CENTER`, 프로그램 `status`는 `DRAFT/ACTIVE/PAUSED/ARCHIVED`를 사용한다. 신청 이후 가격이 바뀌어도 계약 금액이 변하지 않도록 `enrollments.monthly_price`에 신청 당시 금액을 복사한다.
 
-### 3.8 선생님 테이블
+### 3.9 선생님 테이블
 
 | 테이블 | 주요 컬럼 | 키/관계 | 설명 |
 |---|---|---|---|
@@ -156,7 +173,7 @@
 
 검증 종류는 `IDENTITY/CAREER/CERTIFICATE/SAFETY/EMERGENCY/COMMUNICATION`, 검증 상태는 `PENDING/VERIFIED/REJECTED/EXPIRED`다. `reference_no`에 주민등록번호나 자격증 원본을 넣지 않으며 필요하면 별도의 암호화 문서 저장소 키만 보관한다.
 
-### 3.9 `enrollments`
+### 3.10 `enrollments`
 
 | 컬럼 | 타입 | NULL | 키 | 설명 |
 |---|---|---:|---|---|
@@ -174,7 +191,7 @@
 | `start_date/end_date` | DATE | Y |  | 이용 기간 |
 | `cancelled_at`, `cancellation_reason` | DATETIME/VARCHAR | Y |  | 취소 정보 |
 
-### 3.10 `teacher_match_requests`
+### 3.11 `teacher_match_requests`
 
 | 컬럼 | 타입 | NULL | 키 | 설명 |
 |---|---|---:|---|---|
@@ -189,7 +206,7 @@
 | `status` | VARCHAR(20) | N | IDX | `RECEIVED/REVIEWING/OFFERED/MATCHED/DECLINED/CANCELLED` |
 | `responded_at` | DATETIME(3) | Y |  | 응답 완료 시각 |
 
-### 3.11 `class_sessions`
+### 3.12 `class_sessions`
 
 | 컬럼 | 타입 | NULL | 키 | 설명 |
 |---|---|---:|---|---|
@@ -204,7 +221,21 @@
 | `status` | VARCHAR(20) | N | IDX | `SCHEDULED/TEACHER_EN_ROUTE/ARRIVED/IN_PROGRESS/COMPLETED/CANCELLED/NO_SHOW` |
 | `cancelled_by_user_id`, `cancellation_reason` | BIGINT/VARCHAR | Y | FK | 취소 정보 |
 
-### 3.12 안전 테이블
+### 3.13 `teacher_reviews`
+
+| 컬럼 | 타입 | NULL | 키 | 설명 |
+|---|---|---:|---|---|
+| `id` | BIGINT UNSIGNED | N | PK | 후기 식별자 |
+| `class_session_id` | BIGINT UNSIGNED | N | FK, UK | 완료된 수업 회차 |
+| `teacher_id` | BIGINT UNSIGNED | N | FK, IDX | 평가 대상 선생님 |
+| `author_user_id` | BIGINT UNSIGNED | N | FK, UK | 작성자 |
+| `rating` | TINYINT UNSIGNED | N |  | 1~5점 |
+| `content` | VARCHAR(2000) | Y |  | 후기 본문 |
+| `status` | VARCHAR(20) | N | IDX | `PUBLISHED/HIDDEN/REPORTED` |
+
+동일 사용자는 한 수업에 한 번만 작성할 수 있다. `teachers.rating`과 `review_count`는 공개 목록 성능을 위한 집계 캐시이며 후기 생성·숨김 시 트랜잭션 또는 비동기 집계로 갱신한다.
+
+### 3.14 안전 테이블
 
 | 테이블 | 주요 컬럼 | 키/관계 | 설명 |
 |---|---|---|---|
@@ -213,7 +244,7 @@
 
 안전 이벤트 종류는 `SCHEDULE_CONFIRMED/TEACHER_DEPARTED/NFC_ARRIVAL/GPS_SHARED/CLASS_STARTED/CLASS_ENDED/TEACHER_RETURNED/EMERGENCY`다. GPS는 상시 추적하지 않고 방문에 필요한 짧은 시간만 공유하며, 원본 이동경로는 기본 스키마에 저장하지 않는다.
 
-### 3.13 학습·안부 리포트
+### 3.15 학습·안부 리포트
 
 | 테이블 | 주요 컬럼 | 키/관계 | 설명 |
 |---|---|---|---|
@@ -222,7 +253,7 @@
 
 기분·활력·집중은 1~5 범위다. 이는 의료 진단값이 아니라 수업 중 관찰 지표이며, 진단명·질환 예측값을 이 테이블에 기록하지 않는다.
 
-### 3.14 `notifications`
+### 3.16 `notifications`
 
 | 컬럼 | 타입 | NULL | 키 | 설명 |
 |---|---|---:|---|---|
@@ -237,7 +268,21 @@
 | `scheduled_at/sent_at/read_at` | DATETIME(3) | Y |  | 예약·발송·읽음 시각 |
 | `failure_reason` | VARCHAR(500) | Y |  | 발송 실패 사유 |
 
-### 3.15 기관·바우처·결제
+### 3.17 `audit_logs`
+
+| 컬럼 | 타입 | NULL | 키 | 설명 |
+|---|---|---:|---|---|
+| `id` | BIGINT UNSIGNED | N | PK | 감사 로그 식별자 |
+| `actor_user_id` | BIGINT UNSIGNED | Y | FK, IDX | 작업 사용자, 시스템 작업은 NULL |
+| `action` | VARCHAR(80) | N |  | `VIEW_REPORT`, `UPDATE_ADDRESS` 등 |
+| `resource_type/resource_id` | VARCHAR(80) | N/Y | IDX | 대상 종류와 식별자 |
+| `ip_address` | VARBINARY(16) | Y |  | IPv4/IPv6 packed 값 |
+| `user_agent` | VARCHAR(500) | Y |  | 요청 클라이언트 |
+| `result` | VARCHAR(20) | N |  | `SUCCESS/DENIED/FAILED` |
+| `metadata` | JSON | Y |  | 비민감 부가정보 |
+| `occurred_at` | DATETIME(3) | N | IDX | 발생 시각 |
+
+### 3.18 기관·바우처·결제
 
 | 테이블 | 주요 컬럼 | 키/관계 | 설명 |
 |---|---|---|---|
@@ -250,7 +295,7 @@
 
 주문 금액은 `order_amount = voucher_amount + payable_amount`를 만족해야 한다. 결제 승인과 바우처 잔액 차감은 한 DB 트랜잭션에서 처리하고, PG 웹훅은 `provider_transaction_id`로 멱등 처리한다.
 
-### 3.16 `sessions`
+### 3.19 `sessions`
 
 | 컬럼 | 타입 | NULL | 키 | 설명 |
 |---|---|---:|---|---|

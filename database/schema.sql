@@ -129,6 +129,26 @@ CREATE TABLE centers (
   CONSTRAINT chk_centers_status CHECK (status IN ('PREPARING','ACTIVE','INACTIVE'))
 ) ENGINE=InnoDB COMMENT='센터 수업 운영 장소';
 
+CREATE TABLE nfc_tags (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  tag_uid_hash CHAR(64) NOT NULL COMMENT 'NFC UID의 SHA-256 이상 해시',
+  address_id BIGINT UNSIGNED NULL COMMENT '방문 수업 장소 태그',
+  center_id BIGINT UNSIGNED NULL COMMENT '센터 출입 태그',
+  label VARCHAR(80) NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+  activated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  revoked_at DATETIME(3) NULL,
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_nfc_tags_uid (tag_uid_hash),
+  KEY idx_nfc_tags_address (address_id, status),
+  KEY idx_nfc_tags_center (center_id, status),
+  CONSTRAINT fk_nfc_tags_address FOREIGN KEY (address_id) REFERENCES addresses(id) ON DELETE CASCADE,
+  CONSTRAINT fk_nfc_tags_center FOREIGN KEY (center_id) REFERENCES centers(id) ON DELETE CASCADE,
+  CONSTRAINT chk_nfc_tags_owner CHECK ((address_id IS NOT NULL AND center_id IS NULL) OR (address_id IS NULL AND center_id IS NOT NULL)),
+  CONSTRAINT chk_nfc_tags_status CHECK (status IN ('ACTIVE','REVOKED','LOST'))
+) ENGINE=InnoDB COMMENT='도착 인증에 사용하는 등록 NFC 태그';
+
 CREATE TABLE program_categories (
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   code VARCHAR(40) NOT NULL COMMENT 'DIGITAL/WELLNESS/COGNITIVE 등',
@@ -384,6 +404,27 @@ CREATE TABLE class_sessions (
   CONSTRAINT chk_class_status CHECK (status IN ('SCHEDULED','TEACHER_EN_ROUTE','ARRIVED','IN_PROGRESS','COMPLETED','CANCELLED','NO_SHOW'))
 ) ENGINE=InnoDB COMMENT='회차별 실제 수업 일정';
 
+CREATE TABLE teacher_reviews (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  class_session_id BIGINT UNSIGNED NOT NULL,
+  teacher_id BIGINT UNSIGNED NOT NULL,
+  author_user_id BIGINT UNSIGNED NOT NULL,
+  rating TINYINT UNSIGNED NOT NULL,
+  content VARCHAR(2000) NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'PUBLISHED',
+  created_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  updated_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  deleted_at DATETIME(3) NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_teacher_reviews_session_author (class_session_id, author_user_id),
+  KEY idx_teacher_reviews_teacher (teacher_id, status, created_at),
+  CONSTRAINT fk_reviews_class FOREIGN KEY (class_session_id) REFERENCES class_sessions(id),
+  CONSTRAINT fk_reviews_teacher FOREIGN KEY (teacher_id) REFERENCES teachers(id),
+  CONSTRAINT fk_reviews_author FOREIGN KEY (author_user_id) REFERENCES users(id),
+  CONSTRAINT chk_reviews_rating CHECK (rating BETWEEN 1 AND 5),
+  CONSTRAINT chk_reviews_status CHECK (status IN ('PUBLISHED','HIDDEN','REPORTED'))
+) ENGINE=InnoDB COMMENT='완료 수업에 대한 선생님 후기';
+
 CREATE TABLE session_safety_events (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   class_session_id BIGINT UNSIGNED NOT NULL,
@@ -503,6 +544,25 @@ CREATE TABLE notifications (
   CONSTRAINT chk_notifications_channel CHECK (channel IN ('IN_APP','SMS','PUSH','EMAIL')),
   CONSTRAINT chk_notifications_status CHECK (status IN ('PENDING','SENT','FAILED','CANCELLED'))
 ) ENGINE=InnoDB COMMENT='가족·시니어·선생님 알림 발송 이력';
+
+CREATE TABLE audit_logs (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  actor_user_id BIGINT UNSIGNED NULL,
+  action VARCHAR(80) NOT NULL COMMENT 'VIEW_REPORT/UPDATE_ADDRESS 등',
+  resource_type VARCHAR(80) NOT NULL,
+  resource_id VARCHAR(80) NULL,
+  ip_address VARBINARY(16) NULL COMMENT 'IPv4/IPv6 packed binary',
+  user_agent VARCHAR(500) NULL,
+  result VARCHAR(20) NOT NULL DEFAULT 'SUCCESS',
+  metadata JSON NULL COMMENT '민감 원문 포함 금지',
+  occurred_at DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (id),
+  KEY idx_audit_actor_time (actor_user_id, occurred_at),
+  KEY idx_audit_resource_time (resource_type, resource_id, occurred_at),
+  KEY idx_audit_occurred (occurred_at),
+  CONSTRAINT fk_audit_actor FOREIGN KEY (actor_user_id) REFERENCES users(id) ON DELETE SET NULL,
+  CONSTRAINT chk_audit_result CHECK (result IN ('SUCCESS','DENIED','FAILED'))
+) ENGINE=InnoDB COMMENT='관리자·사용자의 민감정보 접근 및 변경 감사 로그';
 
 -- 6. 결제와 B2B/B2G --------------------------------------------------------
 
