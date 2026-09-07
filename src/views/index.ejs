@@ -1,0 +1,132 @@
+<section class="hero">
+  <div class="hero-blob b1"></div>
+  <div class="hero-blob b2"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <span class="eyebrow">배움이 곧 돌봄이 되는 시간</span>
+        <h1>돌봄을 넘어,<br /><span class="highlight">오늘도 성장하는 나</span></h1>
+        <p class="hero-lead">
+          실용 외국어, 웰니스, 디지털, 예술까지 원하는 수업을 집이나 가까운 센터에서 만나세요.
+          가족에게는 수업 뒤 안부와 참여 모습을 전해드려요.
+        </p>
+        <div class="hero-actions">
+          <a href="/plans" class="btn btn-primary btn-lg">나에게 맞는 수업 찾기</a>
+          <form action="/demo-login" method="POST">
+            <button type="submit" class="btn btn-ghost btn-lg">가족 안심 화면 체험</button>
+          </form>
+        </div>
+        <div class="hero-trust" aria-label="서비스 핵심 특징">
+          <span>✓ 방문·센터 선택</span>
+          <span>✓ 검증된 전문 강사</span>
+          <span>✓ 수업 후 안부 공유</span>
+        </div>
+      </div>
+
+      <div class="hero-visual care-preview">
+        <div class="preview-head">
+          <div>
+            <span class="mini-label">오늘의 안심 수업</span>
+            <div class="timeline-title">김은주 선생님 · 오전 10:00</div>
+          </div>
+          <span class="status-pill">방문 예정</span>
+        </div>
+        <ol class="safety-steps preview-steps">
+          <li class="done"><span>✓</span><div><strong>일정 확정</strong><small>가족에게 안내 완료</small></div></li>
+          <li><span>2</span><div><strong>NFC 도착 인증</strong><small>방문 즉시 알려드려요</small></div></li>
+          <li><span>3</span><div><strong>수업 종료 알림</strong><small>오늘의 안부와 함께</small></div></li>
+          <li><span>4</span><div><strong>강사 귀가 확인</strong><small>양쪽 모두 안전하게</small></div></li>
+        </ol>
+        <div class="report-snippet">💬 “오늘 먼저 손주 이야기를 꺼내셨어요.”</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section statement-section">
+  <div class="container statement-grid">
+    <div>
+      <span class="mini-label">왜 이음학습인가요?</span>
+      <h2>받는 돌봄에서<br />스스로 성장하는 일상으로</h2>
+    </div>
+    <p>건강할 때부터 배우고, 움직이고, 사람과 연결되는 예방적 돌봄을 시작합니다. 어르신에게는 자아실현의 시간을, 가족에게는 부모님의 오늘을 자연스럽게 묻는 계기를 만듭니다.</p>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="mini-label">관심사로 시작해요</span>
+        <h2>내가 원하는 배움을 골라보세요</h2>
+        <p>점수보다 흥미와 참여, 일상의 작은 변화를 소중하게 기록합니다.</p>
+      </div>
+      <a href="/plans" class="btn btn-outline btn-sm">모든 수업 보기</a>
+    </div>
+    <div class="grid-3">
+      <% plans.forEach(function(plan) { %>
+        <a href="/plans/<%= plan.id %>" class="plan-card">
+          <div class="plan-icon"><%= plan.icon %></div>
+          <span class="plan-badge badge-<%= plan.color %>"><%= plan.subject %></span>
+          <h3><%= plan.title %></h3>
+          <p class="plan-summary"><%= plan.summary %></p>
+          <div class="plan-link">자세히 보기 <span>→</span></div>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="mini-label">집에서도, 가까운 곳에서도</span>
+        <h2>나에게 편한 방식으로 만나요</h2>
+      </div>
+    </div>
+    <div class="grid-2 service-modes">
+      <article class="mode-card mode-home">
+        <span class="mode-icon">🏠</span>
+        <div><h3>집으로 찾아가는 1:1 수업</h3><p>이동이 어렵거나 익숙한 공간이 편한 분께 선생님이 직접 찾아갑니다. NFC 도착 인증과 수업 종료 안내로 방문 과정을 가족과 공유해요.</p></div>
+      </article>
+      <article class="mode-card mode-center">
+        <span class="mode-icon">☀️</span>
+        <div><h3>사람을 만나는 센터 수업</h3><p>가까운 공간에서 개인 또는 소그룹 활동에 참여합니다. 취미를 나누며 자연스럽게 이웃과 관계를 이어갈 수 있어요.</p></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section process-section">
+  <div class="container">
+    <div class="section-head">
+      <div><span class="mini-label">안전과 품질을 함께</span><h2>이음학습의 약속</h2></div>
+    </div>
+    <div class="steps promise-steps">
+      <div class="step-card"><div class="step-num">01</div><h3>꼼꼼한 강사 검증</h3><p>신원과 경력·자격을 확인하고, 시니어 이해와 안전·가족 소통 교육을 마친 선생님을 연결합니다.</p></div>
+      <div class="step-card"><div class="step-num">02</div><h3>방문 전 과정 안심</h3><p>도착 인증, 필요 시 GPS 경로 공유, 수업 종료와 강사 귀가까지 주요 상태를 확인합니다.</p></div>
+      <div class="step-card"><div class="step-num">03</div><h3>가족을 잇는 리포트</h3><p>기분, 활력, 집중도와 선생님의 관찰을 전하고 다음 가족 대화를 위한 작은 질문도 제안합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head"><div><span class="mini-label">사람이 만드는 신뢰</span><h2>검증된 전문 선생님</h2><p>각자의 경력과 전문성이 시니어의 새로운 배움으로 이어집니다.</p></div><a href="/teachers" class="btn btn-outline btn-sm">선생님 보기</a></div>
+    <div class="grid-3">
+      <% teachers.forEach(function(teacher) { %>
+        <div class="teacher-card">
+          <div class="teacher-top"><div class="avatar"><%= teacher.name.charAt(0) %></div><div><div class="teacher-name"><%= teacher.name %></div><div class="teacher-subject"><%= teacher.subject %></div></div></div>
+          <div class="verified-line">✓ 본인·경력 확인 완료</div>
+          <p class="teacher-intro"><%= teacher.intro %></p>
+          <div class="teacher-region">📍 <%= teacher.region %></div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container"><div class="cta"><span class="cta-kicker">오늘의 관심사가 내일의 활력이 되도록</span><h2>어떤 배움을 시작하고 싶으세요?</h2><p>수업과 장소, 횟수를 직접 고르고 우리 가족에게 맞는 선생님을 만나보세요.</p><div class="hero-actions" style="justify-content:center; margin-top:24px;"><a href="/plans" class="btn btn-outline btn-lg">수업 둘러보기</a></div></div></div>
+</section>

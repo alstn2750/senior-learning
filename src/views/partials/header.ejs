@@ -1,0 +1,39 @@
+<div class="access-bar">
+  <div class="container">
+    <span>화면이 작게 보이시나요?</span>
+    <button type="button" class="access-btn" data-font-btn="base">가</button>
+    <button type="button" class="access-btn" data-font-btn="lg">가+</button>
+    <button type="button" class="access-btn" data-font-btn="xl">가++</button>
+    <button type="button" class="access-btn" data-contrast-btn>고대비</button>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container">
+    <a href="/" class="brand">
+      <span class="brand-mark">이음</span>
+      이음학습
+    </a>
+
+    <nav class="main-nav">
+      <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">홈</a>
+      <a href="/plans" class="<%= currentPath && currentPath.startsWith('/plans') ? 'active' : '' %>">배움 프로그램</a>
+      <a href="/teachers" class="<%= currentPath && currentPath.startsWith('/teachers') ? 'active' : '' %>">전문 선생님</a>
+      <% if (currentUser) { %>
+        <a href="/dashboard" class="<%= currentPath && currentPath.startsWith('/dashboard') ? 'active' : '' %>">가족 안심</a>
+      <% } %>
+    </nav>
+
+    <div class="header-actions">
+      <% if (currentUser) { %>
+        <span style="font-weight:700; font-size:15px; margin-right:4px;"><%= currentUser.name %>님</span>
+        <form action="/logout" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-ghost btn-sm">로그아웃</button>
+        </form>
+      <% } else { %>
+        <a href="/login" class="btn btn-ghost btn-sm">로그인</a>
+        <a href="/signup" class="btn btn-primary btn-sm">회원가입</a>
+      <% } %>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,57 @@
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="mini-label">신뢰할 수 있는 사람을 연결합니다</span>
+        <h2>전문 선생님 매칭</h2>
+        <p>검증 내역과 전문 분야를 살펴보고, 편한 방식과 시간에 맞춰 신청하세요.</p>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <% teachers.forEach(function(teacher) { %>
+        <div class="teacher-card">
+          <div class="teacher-top">
+            <div class="avatar"><%= teacher.name.charAt(0) %></div>
+            <div>
+              <div class="teacher-name"><%= teacher.name %></div>
+              <div class="teacher-subject"><%= teacher.subject %></div>
+            </div>
+          </div>
+          <div class="teacher-rating">★ <%= teacher.rating %> · 후기 <%= teacher.reviewCount %>개</div>
+          <div class="verification-list"><% teacher.verified.forEach(function(item) { %><span>✓ <%= item %></span><% }) %></div>
+          <div class="mode-tags"><% teacher.modes.forEach(function(mode) { %><span><%= mode %> 수업</span><% }) %></div>
+          <div class="teacher-region">📍 <%= teacher.region %></div>
+          <p class="teacher-intro"><%= teacher.intro %></p>
+          <p style="font-size:13px; color:var(--color-navy-soft); margin-bottom:8px;"><%= teacher.career %></p>
+
+          <% if (requestedTeacherIds.includes(teacher.id)) { %>
+            <span class="btn btn-outline btn-block" style="pointer-events:none;">매칭 신청 완료</span>
+          <% } else if (currentUser) { %>
+            <details>
+              <summary class="btn btn-primary btn-block" style="list-style:none;">매칭 신청하기</summary>
+              <form action="/teachers/<%= teacher.id %>/request" method="POST" style="margin-top:14px;">
+                <div class="form-group">
+                  <label>희망 시간대</label>
+                  <select name="preferredTime">
+                    <option value="평일 오전">평일 오전</option>
+                    <option value="평일 오후">평일 오후</option>
+                    <option value="주말">주말</option>
+                  </select>
+                </div>
+                <div class="form-group"><label>희망 수업 방식</label><select name="serviceMode"><option value="방문 학습">방문 학습</option><option value="센터 학습">센터 학습</option></select></div>
+                <div class="form-group">
+                  <label>선생님께 전달할 메시지</label>
+                  <textarea name="message" placeholder="예: 화, 목요일 오전에 방문 부탁드려요."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">신청 보내기</button>
+              </form>
+            </details>
+          <% } else { %>
+            <a href="/login?next=/teachers" class="btn btn-primary btn-block">로그인하고 매칭 신청하기</a>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>

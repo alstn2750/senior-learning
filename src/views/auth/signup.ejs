@@ -1,0 +1,49 @@
+<div class="container">
+  <div class="auth-wrap">
+    <div class="form-card">
+      <h2 style="text-align:center;">이음학습 회원가입</h2>
+      <p style="text-align:center; color:var(--color-navy-soft);">시니어 본인도, 가족도 가입해 배움과 안부를 함께 관리할 수 있어요.</p>
+
+      <form action="/signup" method="POST">
+        <div class="form-group">
+            <label for="name">가입자 이름</label>
+          <input type="text" id="name" name="name" placeholder="홍길동" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="accountType">가입 유형</label><select id="accountType" name="accountType"><option value="가족">가족</option><option value="시니어 본인">시니어 본인</option></select></div>
+          <div class="form-group"><label for="relationship">학습자와의 관계</label><input type="text" id="relationship" name="relationship" placeholder="예: 딸, 본인" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" placeholder="example@email.com" required />
+          </div>
+          <div class="form-group">
+            <label for="phone">연락처</label>
+            <input type="tel" id="phone" name="phone" placeholder="010-1234-5678" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="password">비밀번호</label>
+          <input type="password" id="password" name="password" placeholder="6자 이상 입력해주세요" minlength="6" required />
+        </div>
+
+        <div class="form-divider">학습하실 분 정보 (선택)</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="learnerName">학습자 성함</label>
+            <input type="text" id="learnerName" name="learnerName" placeholder="김말순" />
+          </div>
+          <div class="form-group">
+            <label for="learnerAge">연세</label>
+            <input type="number" id="learnerAge" name="learnerAge" placeholder="68" min="40" max="110" />
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg">회원가입하고 시작하기</button>
+      </form>
+
+      <p class="form-foot">이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,69 @@
+<section class="section-tight">
+  <div class="container">
+    <div class="dash-welcome">
+      <div><span class="dash-kicker">가족 안심 대시보드</span><h2><%= currentUser.learnerName || currentUser.name %>님의 오늘</h2><p>배움의 성취와 안부를 함께 확인하고, 따뜻한 대화를 이어보세요.</p></div>
+      <div class="welcome-badge">배움으로 잇는 돌봄</div>
+    </div>
+
+    <% if (visits.length > 0) { const visit = visits[0]; %>
+      <section class="card visit-card">
+        <div class="card-head-row"><div><span class="mini-label">다음 수업과 안전 여정</span><h3><%= visit.subject %></h3><p><%= new Date(visit.scheduledAt).toLocaleString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short', hour: 'numeric', minute: '2-digit' }) %> · <%= visit.teacher ? visit.teacher.name : '담당 선생님' %> · <%= visit.mode %></p></div><span class="status-pill"><%= visit.status %></span></div>
+        <ol class="safety-steps horizontal-steps">
+          <% visit.safetySteps.forEach(function(step, index) { %>
+            <li class="<%= step.state %>"><span><%= step.state === 'done' ? '✓' : index + 1 %></span><div><strong><%= step.label %></strong><small><%= step.state === 'done' ? '확인 완료' : '수업 진행에 따라 안내' %></small></div></li>
+          <% }) %>
+        </ol>
+        <p class="privacy-note">🔒 위치 정보는 방문 수업의 안전 확인에만 사용하고 필요한 시간 동안만 공유합니다.</p>
+      </section>
+    <% } %>
+
+    <div class="dash-grid care-dash-grid">
+      <div>
+        <section class="card report-card">
+          <div class="card-head-row"><div><span class="mini-label">최근 수업 안부</span><h3>선생님이 전한 오늘의 모습</h3></div><span class="report-date"><%= latestReport ? new Date(latestReport.createdAt).toLocaleDateString('ko-KR') : '' %></span></div>
+          <% if (!latestReport) { %>
+            <div class="empty-state"><p>첫 수업이 끝나면 기분, 활력, 집중도와 선생님의 관찰 기록을 전해드려요.</p></div>
+          <% } else { %>
+            <div class="wellbeing-grid">
+              <div><span>기분</span><strong><%= '●'.repeat(latestReport.mood) %><i><%= '●'.repeat(5 - latestReport.mood) %></i></strong></div>
+              <div><span>활력</span><strong><%= '●'.repeat(latestReport.energy) %><i><%= '●'.repeat(5 - latestReport.energy) %></i></strong></div>
+              <div><span>집중</span><strong><%= '●'.repeat(latestReport.focus) %><i><%= '●'.repeat(5 - latestReport.focus) %></i></strong></div>
+            </div>
+            <blockquote class="teacher-note"><p><%= latestReport.note %></p><footer><%= latestReport.teacher ? latestReport.teacher.name : '담당 선생님' %></footer></blockquote>
+            <div class="conversation-card"><span>오늘의 가족 대화</span><strong>“<%= latestReport.familyPrompt %>”</strong></div>
+          <% } %>
+        </section>
+
+        <section class="card activity-card">
+          <div class="card-head-row"><div><span class="mini-label">배움의 기록</span><h3>최근 학습 활동</h3></div></div>
+          <% if (allProgress.length === 0) { %>
+            <div class="empty-state"><p>아직 등록된 학습 기록이 없어요.</p><a href="/plans" class="btn btn-primary">수업 찾아보기</a></div>
+          <% } else { %>
+            <ul class="timeline">
+              <% allProgress.slice(0, 5).forEach(function(p) { %>
+                <li class="timeline-item"><div class="timeline-dot">✓</div><div><div class="timeline-title"><%= p.planTitle %><span class="score-pill">참여 기록 <%= p.score %></span></div><div class="timeline-meta"><%= new Date(p.date).toLocaleDateString('ko-KR') %> · <%= p.note %></div></div></li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+      </div>
+
+      <aside>
+        <section class="card subscription-card">
+          <span class="mini-label">이용 중인 수업</span><h3>나의 배움 일정</h3>
+          <% if (enrollments.length === 0) { %><div class="empty-state"><p>이용 중인 수업이 없어요.</p><a href="/plans" class="btn btn-primary">수업 둘러보기</a></div><% } else { %>
+            <% enrollments.forEach(function(e) { %><div class="enroll-row"><div><div class="timeline-title"><%= e.plan ? e.plan.title : '수업' %></div><div class="timeline-meta"><%= e.serviceMode || '방문 학습' %> · 주 <%= e.weeklyFrequency || 1 %>회<% if (e.plan) { %> · 월 <%= (e.plan.price * (e.weeklyFrequency || 1)).toLocaleString() %>원 예상<% } %></div></div><span class="status-pill"><%= e.status %></span></div><% }) %>
+            <a href="/plans" class="btn btn-ghost btn-block" style="margin-top:16px;">다른 수업 찾기</a>
+          <% } %>
+        </section>
+
+        <section class="card match-card">
+          <span class="mini-label">담당 선생님</span><h3>매칭 현황</h3>
+          <% if (matchRequests.length === 0) { %><div class="empty-state"><p>아직 신청한 선생님이 없어요.</p><a href="/teachers" class="btn btn-primary">선생님 찾기</a></div><% } else { %>
+            <% matchRequests.forEach(function(m) { %><div class="matched-teacher"><div class="avatar small"><%= m.teacher ? m.teacher.name.charAt(0) : '선' %></div><div><strong><%= m.teacher ? m.teacher.name : '선생님' %></strong><span><%= m.preferredTime %> · <%= m.status %></span></div></div><% }) %>
+          <% } %>
+        </section>
+      </aside>
+    </div>
+  </div>
+</section>

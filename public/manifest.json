@@ -1,0 +1,18 @@
+{
+  "name": "이음학습 - 어르신과 가족을 잇는 학습 동행",
+  "short_name": "이음학습",
+  "description": "50~70대 어르신을 위한 학습지 구독과 방문 선생님 매칭 서비스",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fffaf4",
+  "theme_color": "#ff6b4a",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

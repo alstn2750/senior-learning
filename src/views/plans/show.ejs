@@ -1,0 +1,48 @@
+<section class="section">
+  <div class="container">
+    <div class="detail-hero">
+      <div>
+        <span class="plan-badge badge-<%= plan.color %>"><%= plan.subject %></span>
+        <div class="plan-icon detail-icon"><%= plan.icon %></div>
+        <h1 style="font-size:32px; margin-top:14px;"><%= plan.title %></h1>
+        <p style="color:var(--color-navy-soft); font-size:18px;"><%= plan.description %></p>
+
+        <div class="card" style="margin-top:24px;">
+          <h3>이런 분께 추천해요</h3>
+          <ul class="detail-list" style="color:var(--color-navy-soft);">
+            <% plan.benefits.forEach(function(benefit) { %><li><%= benefit %></li><% }) %>
+          </ul>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h3>수업에서 함께해요</h3>
+          <ul class="detail-list" style="color:var(--color-navy-soft); margin-bottom:0;">
+            <% plan.curriculum.forEach(function(item) { %><li><%= item %></li><% }) %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="detail-side">
+        <div class="card">
+          <span class="mini-label">이용 방식 선택</span>
+          <div class="plan-price" style="font-size:26px; margin-bottom:4px;">월 <%= plan.price.toLocaleString() %>원부터</div>
+          <p style="color:var(--color-navy-soft); font-size:13px; margin-bottom:20px;">주 1회 기준 데모 예상가이며 실제 가격은 상담 후 확정됩니다.</p>
+
+          <% if (alreadyEnrolled) { %>
+            <a href="/dashboard" class="btn btn-outline btn-block btn-lg">이미 구독 중 · 대시보드 보기</a>
+          <% } else { %>
+            <form action="/plans/<%= plan.id %>/enroll" method="POST" data-plan-pricing data-base-price="<%= plan.price %>">
+              <div class="form-group"><label for="serviceMode">어디에서 만날까요?</label><select id="serviceMode" name="serviceMode"><% if (plan.id !== 'plan-hobby') { %><option>방문 학습</option><% } %><option>센터 학습</option></select></div>
+              <div class="form-group"><label for="weeklyFrequency">일주일에 몇 번 만날까요?</label><select id="weeklyFrequency" name="weeklyFrequency"><option value="1">주 1회</option><option value="2">주 2회</option><option value="3">주 3회</option></select></div>
+              <div class="form-group"><label for="payer">비용을 결제하는 분</label><select id="payer" name="payer"><option value="자녀">자녀·가족</option><option value="본인">시니어 본인</option></select></div>
+              <div class="price-estimate"><span>월 예상 금액</span><strong data-monthly-price><%= plan.price.toLocaleString() %>원</strong><small>프로토타입 예상가 · 상담 후 확정</small></div>
+              <button type="submit" class="btn btn-primary btn-block btn-lg">이 프로그램 신청하기</button>
+            </form>
+          <% } %>
+
+          <a href="/teachers" class="btn btn-ghost btn-block" style="margin-top:10px;">전문 선생님 먼저 보기</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

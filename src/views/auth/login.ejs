@@ -1,0 +1,28 @@
+<div class="container">
+  <div class="auth-wrap">
+    <div class="form-card">
+      <h2 style="text-align:center;">다시 오신 걸 환영해요</h2>
+      <p style="text-align:center; color:var(--color-navy-soft);">이메일로 로그인하고 배움과 가족 안부를 확인하세요.</p>
+
+      <form action="/login" method="POST">
+        <input type="hidden" name="next" value="<%= next %>" />
+        <div class="form-group">
+          <label for="email">이메일</label>
+          <input type="email" id="email" name="email" placeholder="example@email.com" required />
+        </div>
+        <div class="form-group">
+          <label for="password">비밀번호</label>
+          <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">로그인</button>
+      </form>
+
+      <div class="form-divider">또는</div>
+      <form action="/demo-login" method="POST">
+        <button type="submit" class="btn btn-ghost btn-block">체험 계정으로 바로 둘러보기</button>
+      </form>
+
+      <p class="form-foot">아직 계정이 없으신가요? <a href="/signup">회원가입</a></p>
+    </div>
+  </div>
+</div>

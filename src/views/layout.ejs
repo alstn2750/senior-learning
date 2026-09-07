@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title><%= typeof title !== 'undefined' ? title + ' | 이음학습' : '이음학습' %></title>
+  <meta name="description" content="시니어의 자아실현과 가족의 안심을 잇는 방문·센터 학습 서비스, 이음학습" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#ff6b4a" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icons/icon.svg" />
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <%- include('partials/header') %>
+
+  <main>
+    <% if (typeof flashSuccess !== 'undefined' && flashSuccess.length) { %>
+      <div class="container" style="padding-top: 20px;">
+        <% flashSuccess.forEach(function(msg) { %>
+          <div class="flash flash-success"><%= msg %></div>
+        <% }) %>
+      </div>
+    <% } %>
+    <% if (typeof flashError !== 'undefined' && flashError.length) { %>
+      <div class="container" style="padding-top: 20px;">
+        <% flashError.forEach(function(msg) { %>
+          <div class="flash flash-error"><%= msg %></div>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <%- body %>
+  </main>
+
+  <%- include('partials/footer') %>
+  <%- include('partials/mobile-tabbar') %>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

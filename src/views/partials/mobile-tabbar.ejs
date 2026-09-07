@@ -1,0 +1,14 @@
+<nav class="mobile-tabbar">
+  <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">
+    <span class="tab-icon">🏠</span>홈
+  </a>
+  <a href="/plans" class="<%= currentPath && currentPath.startsWith('/plans') ? 'active' : '' %>">
+    <span class="tab-icon">📖</span>배움
+  </a>
+  <a href="/teachers" class="<%= currentPath && currentPath.startsWith('/teachers') ? 'active' : '' %>">
+    <span class="tab-icon">🧑‍🏫</span>선생님
+  </a>
+  <a href="<%= currentUser ? '/dashboard' : '/login' %>" class="<%= currentPath && currentPath.startsWith('/dashboard') ? 'active' : '' %>">
+    <span class="tab-icon">🫶</span>가족안심
+  </a>
+</nav>

@@ -1,0 +1,36 @@
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div>
+        <span class="mini-label">배움으로 시작하는 예방적 돌봄</span>
+        <h2>관심사에 맞는 프로그램</h2>
+        <p>원하는 수업을 고르고 방문 또는 센터, 주간 횟수를 선택하세요.</p>
+      </div>
+    </div>
+
+    <div class="grid-3">
+      <% plans.forEach(function(plan) { %>
+        <div class="plan-card">
+          <div class="plan-icon"><%= plan.icon %></div>
+          <span class="plan-badge badge-<%= plan.color %>"><%= plan.subject %></span>
+          <h3><%= plan.title %></h3>
+          <p class="plan-summary"><%= plan.summary %></p>
+          <div class="plan-meta">
+            <div class="plan-price">
+              월 <%= plan.price.toLocaleString() %>원부터<br />
+              <small><%= plan.period %> · 데모 예상가</small>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <a href="/plans/<%= plan.id %>" class="btn btn-ghost btn-sm" style="flex:1;">자세히 보기</a>
+            <% if (myPlanIds.includes(plan.id)) { %>
+              <span class="btn btn-outline btn-sm" style="flex:1; pointer-events:none;">구독 중</span>
+            <% } else { %>
+              <a href="/plans/<%= plan.id %>" class="btn btn-primary btn-sm" style="flex:1;">선택하기</a>
+            <% } %>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
